@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { Redirect, Link } from "react-router-dom";
 import { insertUsers } from "../redux";
+import HeaderUser from "./HeaderUser";
+import UserContainer from "./UserContainer";
 class UserContainerForm extends Component {
   constructor(props) {
     super(props);
@@ -22,6 +25,7 @@ class UserContainerForm extends Component {
     const { name, age } = this.state;
     return (
       <div className="container ">
+        <HeaderUser />
         <form onSubmit={this.submitHandler}>
           <div className="form-group text-left">
             <label>Name:</label>
@@ -44,9 +48,15 @@ class UserContainerForm extends Component {
             />
           </div>
           <div className="form-group text-left">
-            <button className="btn btn-primary" type="submit">
-              Submit
-            </button>
+            <Link to={{ pathname: `/home` }}>
+              <button
+                className="btn btn-primary"
+                type="submit"
+                onClick={<Redirect to="/home" />}
+              >
+                Submit
+              </button>
+            </Link>
           </div>
         </form>
       </div>

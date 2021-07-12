@@ -1,6 +1,6 @@
 import React, { Component, useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { fetchUsers, updateUsers } from "../redux";
+import { deleteUsers, fetchUsers, updateUsers } from "../redux";
 import UserContainerForm from "./UserContainerForm";
 import {
   BrowserRouter as Router,
@@ -17,6 +17,7 @@ import Modal from "react-modal";
 // import UserContainerUpdate from "./UserContainerUpdate";
 import childComponent from "./UserContainerUpdate";
 import UserContainerUpdate from "./UserContainerUpdate";
+
 // import { Modal } from "re";
 // const history = useHistory();
 
@@ -28,7 +29,13 @@ function UserContainer({ userData, fetchUsers }, props) {
     fetchUsers();
   }, []);
   const history = useHistory();
-
+  const deleteUserData = async (id) => {
+    await deleteUsers(id);
+    fetchUsers();
+  };
+  const onSubmitDelete = (id) => {
+    deleteUsers(id);
+  };
   return (
     <div>
       <Router>
@@ -36,7 +43,7 @@ function UserContainer({ userData, fetchUsers }, props) {
         <div className="container text-right">
           <Link to={{ pathname: `/adduser` }}>
             <button
-              // onClick={<UserContainerForm />}
+              onClick={<UserContainerForm />}
               className="btn btn-primary btn-md m-1  "
             >
               ADD USER
@@ -72,7 +79,13 @@ function UserContainer({ userData, fetchUsers }, props) {
                         UPDATE
                       </button>
                     </Link>
-                    <button className="btn btn-danger btn-sm m-1 ">
+
+                    <button
+                      onClick={() => {
+                        deleteUserData(user._id);
+                      }}
+                      className="btn btn-danger btn-sm m-1 "
+                    >
                       DELETE
                     </button>
                   </td>

@@ -32,6 +32,7 @@ export const fetchUsers = () => {
       });
   };
 };
+const usersUrl = "http://localhost:9000";
 export const insertUsers = (user) => {
   return (dispatch) => {
     dispatch(fetchUserRequest());
@@ -46,35 +47,49 @@ export const insertUsers = (user) => {
       });
   };
 };
-export const updateUsers = (user, name, age) => {
-  console.log("updated user", user, name, age);
-  return (dispatch) => {
-    dispatch(fetchUserRequest());
-    axios
-      .put("http://localhost:9000/" + user.id, user.name, age)
-      .then((response) => {
-        const users = response.data;
-        dispatch(fetchUserSuccess(users));
-      })
-      .catch((error) => {
-        dispatch(fetchUserFailure(error.msg));
-      });
-  };
+export const updateUsers = async (id, user) => {
+  return await axios.put(`${usersUrl}/${id}`, user);
 };
-export const deleteUsers = (user) => {
-  return (dispatch) => {
-    dispatch(fetchUserRequest());
-    axios
-      .post("http://localhost:9000/" + user.id)
-      .then((response) => {
-        const users = response.data;
-        dispatch(fetchUserSuccess(users));
-      })
-      .catch((error) => {
-        dispatch(fetchUserFailure(error.msg));
-      });
-  };
+// export const updateUsers = (id, user) => {
+//   console.log("updated user", id, user.name, user.age);
+//   return (dispatch) => {
+//     dispatch(fetchUserRequest());
+//     axios
+//       .put("http://localhost:9000/" + id, user)
+//       .then((response) => {
+//         const users = response.data;
+//         console.log("users==>", users);
+//         dispatch(fetchUserSuccess(users));
+//       })
+//       .catch((error) => {
+//         dispatch(fetchUserFailure(error.msg));
+//       });
+//   };
+// };
+
+export const deleteUsers = async (id) => {
+  return await axios.delete(`${usersUrl}/${id}`);
 };
+// export const deleteUsers = (id) => {
+//   console.log("id", id);
+//   return (dispatch) => {
+//     dispatch(fetchUserRequest());
+//     console.log("data", id);
+//     axios
+//       .delete(`${usersUrl}/${id}`)
+//       .get("http://localhost:9000/")
+//       .then((response) => {
+//         // response.data is the users
+//         const users = response.data;
+//         console.log("users", users);
+//         dispatch(fetchUserSuccess(users));
+//       })
+//       .catch((error) => {
+//         // error.message is the error message
+//         dispatch(fetchUserFailure(error.message));
+//       });
+//   };
+// };
 export const fetchUserRequest = () => {
   return {
     type: FETCH_USER_REQUEST,

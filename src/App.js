@@ -1,23 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
-
+import logo from "./logo.svg";
+import "./App.css";
+import "bootstrap/dist/css/bootstrap.css";
+import UserContainer from "./components/UserContainer";
+import { Provider } from "react-redux";
+import store from "./redux/userStore";
+import UserContainerForm from "./components/UserContainerForm";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  useRouteMatch,
+  useParams,
+  Redirect,
+} from "react-router-dom";
+import UserContainerUpdate from "./components/UserContainerUpdate";
+// import Sample from "./components/Sample";
+import Modal from "react-modal";
+Modal.setAppElement("#root");
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Provider store={store}>
+        <Router>
+          {/* <Header /> */}
+          <Switch>
+            <Route path="/home" component={UserContainer} />
+            <Route path="/adduser" component={UserContainerForm} />
+            <Route path="/updateuser/:id" component={UserContainerUpdate} />
+            <Redirect to="/home" />
+          </Switch>
+        </Router>
+
+        {/* <UserContainer /> */}
+        {/* <UserContainerForm /> */}
+      </Provider>
     </div>
   );
 }

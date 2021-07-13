@@ -13,39 +13,77 @@ import {
   Redirect,
 } from "react-router-dom";
 import Modal from "react-modal";
-
+import TextField from "@material-ui/core/TextField";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 // import UserContainerUpdate from "./UserContainerUpdate";
 import childComponent from "./UserContainerUpdate";
 import UserContainerUpdate from "./UserContainerUpdate";
-
+import SearchField from "react-search-field";
 // import { Modal } from "re";
 // const history = useHistory();
 
 function UserContainer({ userData, fetchUsers }, props) {
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [users, setUsers] = useState([]);
   const [user, setUser] = useState({ name: "", age: "" });
-  const { name, age } = user;
+  const { name, age, email } = user;
   useEffect(() => {
     fetchUsers();
+    setUsers(userData);
   }, []);
   const history = useHistory();
-  const deleteUserData = async (id) => {
-    await deleteUsers(id);
+  const deleteUserData = async (id, name) => {
+    if (window.confirm(`Are you sure you want to Delete ${name}?`)) {
+      await deleteUsers(id);
+    } else {
+      history.push("/home");
+    }
+
+    // await deleteUsers(id);
     fetchUsers();
   };
   const onSubmitDelete = (id) => {
     deleteUsers(id);
   };
+  const addUser = async () => {
+    history.push("/adduser");
+    // <UserContainerForm />;
+  };
+  const updateUser = async () => {
+    <Redirect to="/updateuser/${user._id}" />;
+    history.push("/adduser");
+    // <UserContainerForm />;
+  };
+  const getDataFromAPI = () => {
+    console.log("Options Fetched from API");
+
+    // });
+  };
+
   return (
     <div>
       <Router>
         <h2>Users List</h2>
+        <div className="searchForm">
+          <form>
+            <input
+              type="text"
+              id="filter"
+              placeholder="Search for..."
+              ref={(input) => (this.search = input)}
+              onChange={this.handleInputChange}
+            />
+          </form>
+          <div>
+            {userData.map((i) => (
+              <p>{i.name}</p>
+            ))}
+          </div>
+        </div>
         <div className="container text-right">
           <Link to={{ pathname: `/adduser` }}>
-            <button
-              onClick={<UserContainerForm />}
-              className="btn btn-primary btn-md m-1  "
-            >
+            <button onClick={addUser} className="btn btn-primary btn-md m-1  ">
               ADD USER
             </button>
           </Link>
@@ -56,6 +94,7 @@ function UserContainer({ userData, fetchUsers }, props) {
               <tr>
                 <th>Name</th>
                 <th>Age</th>
+                <th>Email</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -64,6 +103,7 @@ function UserContainer({ userData, fetchUsers }, props) {
                 <tr key={user._id}>
                   <td>{user.name}</td>
                   <td>{user.age}</td>
+                  <td>{user.email}</td>
                   <td>
                     <Link
                       to={{
@@ -82,7 +122,7 @@ function UserContainer({ userData, fetchUsers }, props) {
 
                     <button
                       onClick={() => {
-                        deleteUserData(user._id);
+                        deleteUserData(user._id, user.name);
                       }}
                       className="btn btn-danger btn-sm m-1 "
                     >

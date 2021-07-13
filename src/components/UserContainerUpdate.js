@@ -9,10 +9,11 @@ const initialState = {
   name: "",
   age: "",
   id: "",
+  email: "",
 };
 function UserContainerUpdate({ userData, fetchUser }, props) {
   const [user, setUser] = useState(initialState);
-  const { name, age } = user;
+  const { name, age, email } = user;
   const { id } = useParams();
   let history = useHistory();
   console.log(
@@ -20,13 +21,20 @@ function UserContainerUpdate({ userData, fetchUser }, props) {
     useParams(),
     userData,
     userData.name,
-    userData.age
+    userData.age,
+    userData.email
   );
   useEffect(() => {
     fetchUser(id);
   }, []);
 
-  console.log("params DAta", useParams(), userData.name, userData.age);
+  console.log(
+    "params DAta",
+    useParams(),
+    userData.name,
+    userData.age,
+    userData.email
+  );
   const onValueChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
@@ -35,14 +43,19 @@ function UserContainerUpdate({ userData, fetchUser }, props) {
   //   updateUsers(id, user);
   //   console.log("inside update state", id, user);
   // };
-  console.log("out side update state", id, name, age);
+  console.log("out side update state", id, name, age, email);
 
-  console.log("user======>", user.name, user.age);
+  console.log("user======>", user.name, user.age, user.email);
   const editUserDetails = async () => {
-    const response = await updateUsers(id, user);
-    console.log("inside ", id, user, user.name, user.age);
-    history.push("/home");
-    <Redirect to="/home" />;
+    if (window.confirm(`Are you sure you want to Update ?`)) {
+      await updateUsers(id, user);
+    } else {
+      history.push("/home");
+    }
+    // await updateUsers(id, user);
+    // console.log("inside ", id, user, user.name, user.age);
+    // history.push("/home");
+    // <Redirect to="/home" />;
   };
   return (
     <div className="container ">
@@ -50,7 +63,7 @@ function UserContainerUpdate({ userData, fetchUser }, props) {
       {userData.map((getuser) => {
         console.log("map user ==========>", getuser);
         return (
-          <p key={getuser._id}>
+          <div key={getuser._id}>
             <form>
               <div className="form-group text-left">
                 <label>Name:</label>
@@ -74,6 +87,17 @@ function UserContainerUpdate({ userData, fetchUser }, props) {
                   onChange={onValueChange}
                 />
               </div>
+              <div className="form-group text-left">
+                <label>Email:</label>
+                <input
+                  type="email"
+                  name="email"
+                  className="form-control"
+                  defaultValue={getuser.email}
+                  // value={user.age}
+                  onChange={onValueChange}
+                />
+              </div>
               <button
                 className="btn btn-primary"
                 onClick={() => editUserDetails()}
@@ -82,7 +106,7 @@ function UserContainerUpdate({ userData, fetchUser }, props) {
                 Update
               </button>
             </form>
-          </p>
+          </div>
         );
       })}
     </div>

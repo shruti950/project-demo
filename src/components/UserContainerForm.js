@@ -10,6 +10,7 @@ class UserContainerForm extends Component {
     this.state = {
       name: "",
       age: "",
+      email: "",
     };
   }
   changeHandler = (e) => {
@@ -22,7 +23,7 @@ class UserContainerForm extends Component {
     this.props.insertUsers(this.state);
   };
   render() {
-    const { name, age } = this.state;
+    const { name, age, email } = this.state;
     return (
       <div className="container ">
         <HeaderUser />
@@ -43,6 +44,16 @@ class UserContainerForm extends Component {
               type="text"
               name="age"
               value={age}
+              className="form-control"
+              onChange={this.changeHandler}
+            />
+          </div>
+          <div className="form-group text-left ">
+            <label className="font-weight-bolder">Age:</label>
+            <input
+              type="email"
+              name="email"
+              value={email}
               className="form-control"
               onChange={this.changeHandler}
             />

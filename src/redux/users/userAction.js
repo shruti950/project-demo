@@ -48,18 +48,20 @@ export const insertUsers = (user) => {
   };
 };
 export const updateUsers = async (id, user) => {
+  console.log("user", user);
   return await axios.put(`${usersUrl}/${id}`, user);
 };
-// export const updateUsers = (id, user) => {
+// export const updateUsers = async (id, user) => {
 //   console.log("updated user", id, user.name, user.age);
-//   return (dispatch) => {
+//   return async (dispatch) => {
 //     dispatch(fetchUserRequest());
-//     axios
-//       .put("http://localhost:9000/" + id, user)
+//     await axios
+//       .put(`${usersUrl}/${id}`, user)
 //       .then((response) => {
 //         const users = response.data;
 //         console.log("users==>", users);
-//         dispatch(fetchUserSuccess(users));
+//         console.log("RESPONSE==>", response);
+//         return dispatch(fetchUserSuccess(users));
 //       })
 //       .catch((error) => {
 //         dispatch(fetchUserFailure(error.msg));

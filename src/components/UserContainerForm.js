@@ -1,79 +1,157 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import { connect } from "react-redux";
-import { Redirect, Link } from "react-router-dom";
+import {
+  useLocation,
+  useParams,
+  Redirect,
+  useHistory,
+  Link,
+} from "react-router-dom";
 import { insertUsers } from "../redux";
 import HeaderUser from "./HeaderUser";
 import UserContainer from "./UserContainer";
-class UserContainerForm extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      name: "",
-      age: "",
-      email: "",
-    };
-  }
-  changeHandler = (e) => {
-    this.setState({ [e.target.name]: e.target.value });
+const initialState = {
+  name: "",
+  age: "",
+  email: "",
+};
+function UserContainerForm() {
+  const [user, setUser] = useState(initialState);
+  const { name, age, email } = user;
+  const { id } = useParams();
+  let history = useHistory();
+
+  const onValueChange = (e) => {
+    setUser({ ...user, [e.target.name]: e.target.value });
+    console.log("user==>", user.email);
   };
 
-  submitHandler = (e) => {
-    e.preventDefault();
-    console.log(this.state);
-    this.props.insertUsers(this.state);
+  const addUser = async (e) => {
+    // if (window.confirm(`Are you sure you want to Update ?`))
+    // e.preventDefault();
+    await insertUsers(user);
+    history.push("/home");
   };
-  render() {
-    const { name, age, email } = this.state;
-    return (
-      <div className="container ">
-        <HeaderUser />
-        <form onSubmit={this.submitHandler}>
-          <div className="form-group text-left">
-            <label>Name:</label>
-            <input
-              type="text"
-              name="name"
-              value={name}
-              className="form-control"
-              onChange={this.changeHandler}
-            />
-          </div>
-          <div className="form-group text-left ">
-            <label className="font-weight-bolder">Age:</label>
-            <input
-              type="text"
-              name="age"
-              value={age}
-              className="form-control"
-              onChange={this.changeHandler}
-            />
-          </div>
-          <div className="form-group text-left ">
-            <label className="font-weight-bolder">Age:</label>
-            <input
-              type="email"
-              name="email"
-              value={email}
-              className="form-control"
-              onChange={this.changeHandler}
-            />
-          </div>
-          <div className="form-group text-left">
-            <Link to={{ pathname: `/home` }}>
-              <button
-                className="btn btn-primary"
-                type="submit"
-                onClick={<Redirect to="/home" />}
-              >
-                Submit
-              </button>
-            </Link>
-          </div>
-        </form>
-      </div>
-    );
-  }
+  return (
+    <div className="container ">
+      <HeaderUser />
+      <form>
+        <div className="form-group text-left">
+          <label>Name:</label>
+          <input
+            type="text"
+            name="name"
+            value={name}
+            className="form-control"
+            onChange={onValueChange}
+          />
+        </div>
+        <div className="form-group text-left ">
+          <label className="font-weight-bolder">Age:</label>
+          <input
+            type="text"
+            name="age"
+            value={age}
+            className="form-control"
+            onChange={onValueChange}
+          />
+        </div>
+        <div className="form-group text-left ">
+          <label className="font-weight-bolder">Email:</label>
+          <input
+            type="email"
+            name="email"
+            value={email}
+            className="form-control"
+            onChange={onValueChange}
+          />
+        </div>
+        <div className="form-group text-left">
+          <Link to={{ pathname: `/home` }}>
+            <button
+              className="btn btn-primary"
+              type="submit"
+              onClick={() => addUser()}
+            >
+              Submit
+            </button>
+          </Link>
+        </div>
+      </form>
+    </div>
+  );
 }
+
+// class UserContainerForm extends Component {
+//   constructor(props) {
+//     super(props);
+//     this.state = {
+//       name: "",
+//       age: "",
+//       email: "",
+//     };
+//   }
+//   changeHandler = (e) => {
+//     this.setState({ [e.target.name]: e.target.value });
+//   };
+
+//   submitHandler = (e) => {
+//     e.preventDefault();
+//     console.log(this.state);
+//     this.props.insertUsers(this.state);
+//   };
+//   render() {
+//     const { name, age, email } = this.state;
+//     return (
+//       <div className="container ">
+//         <HeaderUser />
+//         <form onSubmit={this.submitHandler}>
+//           <div className="form-group text-left">
+//             <label>Name:</label>
+//             <input
+//               type="text"
+//               name="name"
+//               value={name}
+//               className="form-control"
+//               onChange={this.changeHandler}
+//             />
+//           </div>
+//           <div className="form-group text-left ">
+//             <label className="font-weight-bolder">Age:</label>
+//             <input
+//               type="text"
+//               name="age"
+//               value={age}
+//               className="form-control"
+//               onChange={this.changeHandler}
+//             />
+//           </div>
+//           <div className="form-group text-left ">
+//             <label className="font-weight-bolder">Email:</label>
+//             <input
+//               type="email"
+//               name="email"
+//               value={email}
+//               className="form-control"
+//               onChange={this.changeHandler}
+//             />
+//           </div>
+//           <div className="form-group text-left">
+//             <Link to={{ pathname: `/home` }}>
+//               <button
+//                 className="btn btn-primary"
+//                 type="submit"
+//                 onClick={<Redirect to="/home" />}
+//               >
+//                 Submit
+//               </button>
+//             </Link>
+//           </div>
+//         </form>
+//       </div>
+//     );
+//   }
+// }
 const mapStateToProps = (state) => {
   return {
     userData: state.users,

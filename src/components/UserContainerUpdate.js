@@ -40,25 +40,14 @@ function UserContainerUpdate({ userData, fetchUser }, props) {
     setUser({ ...user, [e.target.name]: e.target.value });
     console.log("user==>", user.email);
   };
-  // const onSubmitData = (e) => {
-  //   e.preventDefault();
-  //   updateUsers(id, user);
-  //   console.log("inside update state", id, user);
-  // };
+
   console.log("out side update state", id, name, age, email);
 
   console.log("user======>", user);
   const editUserDetails = async () => {
-    // if (window.confirm(`Are you sure you want to Update ?`)) {
-    console.log("inside update user", id, user);
-    const response = await updateUsers(id, user);
-    // } else {
-    // history.push("/home");
-    // }
-    // await updateUsers(id, user);
-    // console.log("inside ", id, user, user.name, user.age);
-    // history.push("/home");
-    // <Redirect to="/home" />;
+    // if (window.confirm(`Are you sure you want to Update ?`))
+    await updateUsers(id, user);
+    history.push("/home");
   };
   return (
     <div className="container ">
@@ -93,20 +82,22 @@ function UserContainerUpdate({ userData, fetchUser }, props) {
               <div className="form-group text-left">
                 <label>Email:</label>
                 <input
-                  type="text"
+                  type="email"
                   name="email"
                   className="form-control"
                   defaultValue={getuser.email}
                   onChange={onValueChange}
                 />
               </div>
-              <button
-                className="btn btn-primary"
-                onClick={() => editUserDetails()}
-                type="submit"
-              >
-                Update
-              </button>
+              <div className="form-group text-left">
+                <button
+                  className="btn btn-primary"
+                  onClick={() => editUserDetails()}
+                  type="submit"
+                >
+                  Update
+                </button>
+              </div>
             </form>
           </div>
         );
@@ -114,82 +105,7 @@ function UserContainerUpdate({ userData, fetchUser }, props) {
     </div>
   );
 }
-// export default UserContainerUpdate
-// class UserContainerUpdate extends Component {
-//   constructor(props) {
-//     super(props);
-//     this.state = {
-//       name: "",
-//       age: "",
-//     };
-//   }
 
-//   // getUser = (name, age) => {
-//   //   this.setState({
-//   //     name: name,
-//   //     age: age,
-//   //   });
-//   // };
-//   fetchUser()
-//   changeHandler = (e) => {
-//     this.setState({ [e.target.name]: e.target.value });
-//   };
-
-//   submitHandler = (e) => {
-//     e.preventDefault();
-//     console.log(this.state);
-//     this.props.updateUsers(this.state);
-//   };
-
-//   render() {
-//     const { name, age } = this.props;
-//     const { id } = useParams();
-//     console.log("user id", id);
-//     console.log("name" + this.props.name + "age" + this.props);
-//     return (
-//       <div className="container ">
-//         {userData.map((user) => {
-//           console.log("map user ==========>", user);
-//           return (
-//             <p key={user._id}>
-//               <form onSubmit={this.submitHandler}>
-//                 <div className="form-group text-left">
-//                   <label>Name:</label>
-//                   <input
-//                     type="text"
-//                     name="name"
-//                     className="form-control"
-//                     defaultValue={user.name}
-//                     value={name}
-//                     onChange={this.changeHandler}
-//                   />
-//                 </div>
-//                 <div className="form-group text-left">
-//                   <label>Age:</label>
-//                   <input
-//                     type="text"
-//                     name="age"
-//                     className="form-control"
-//                     defaultValue={user.age}
-//                     value={age}
-//                     onChange={this.changeHandler}
-//                   />
-//                 </div>
-//                 <button
-//                   className="btn btn-primary"
-//                   // onClick={() => setModalIsOpen(false)}
-//                   type="submit"
-//                 >
-//                   Update
-//                 </button>
-//               </form>
-//             </p>
-//           );
-//         })}
-//       </div>
-//     );
-//   }
-// }
 const mapStateToProps = (state) => {
   console.log("state", state);
   return {

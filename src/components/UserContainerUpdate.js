@@ -8,7 +8,6 @@ import HeaderUser from "./HeaderUser";
 const initialState = {
   name: "",
   age: "",
-  id: "",
   email: "",
 };
 function UserContainerUpdate({ userData, fetchUser }, props) {
@@ -26,6 +25,8 @@ function UserContainerUpdate({ userData, fetchUser }, props) {
   );
   useEffect(() => {
     fetchUser(id);
+
+    // setUser({ user: userData });
   }, []);
 
   console.log(
@@ -37,6 +38,7 @@ function UserContainerUpdate({ userData, fetchUser }, props) {
   );
   const onValueChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
+    console.log("user==>", user.email);
   };
   // const onSubmitData = (e) => {
   //   e.preventDefault();
@@ -45,13 +47,14 @@ function UserContainerUpdate({ userData, fetchUser }, props) {
   // };
   console.log("out side update state", id, name, age, email);
 
-  console.log("user======>", user.name, user.age, user.email);
+  console.log("user======>", user);
   const editUserDetails = async () => {
-    if (window.confirm(`Are you sure you want to Update ?`)) {
-      await updateUsers(id, user);
-    } else {
-      history.push("/home");
-    }
+    // if (window.confirm(`Are you sure you want to Update ?`)) {
+    console.log("inside update user", id, user);
+    const response = await updateUsers(id, user);
+    // } else {
+    // history.push("/home");
+    // }
     // await updateUsers(id, user);
     // console.log("inside ", id, user, user.name, user.age);
     // history.push("/home");
@@ -90,11 +93,10 @@ function UserContainerUpdate({ userData, fetchUser }, props) {
               <div className="form-group text-left">
                 <label>Email:</label>
                 <input
-                  type="email"
+                  type="text"
                   name="email"
                   className="form-control"
                   defaultValue={getuser.email}
-                  // value={user.age}
                   onChange={onValueChange}
                 />
               </div>

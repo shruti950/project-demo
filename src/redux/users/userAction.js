@@ -47,27 +47,35 @@ export const insertUsers = (user) => {
       });
   };
 };
-export const updateUsers = async (id, user) => {
-  console.log("user", user);
-  return await axios.put(`${usersUrl}/${id}`, user);
-};
 // export const updateUsers = async (id, user) => {
-//   console.log("updated user", id, user.name, user.age);
-//   return async (dispatch) => {
-//     dispatch(fetchUserRequest());
-//     await axios
-//       .put(`${usersUrl}/${id}`, user)
-//       .then((response) => {
-//         const users = response.data;
-//         console.log("users==>", users);
-//         console.log("RESPONSE==>", response);
-//         return dispatch(fetchUserSuccess(users));
-//       })
-//       .catch((error) => {
-//         dispatch(fetchUserFailure(error.msg));
-//       });
-//   };
+//   console.log("user id", user, id);
+//   return await axios
+//     .put(`${usersUrl}/${id}`, user)
+//     .then((res) => {
+//       console.log("response of update", res);
+//       return res;
+//     })
+//     .catch((error) => {
+//       console.log("error occured", error);
+//     });
 // };
+export const updateUsers = async (id, user) => {
+  console.log("updated user", id, user.name, user.age);
+  return async (dispatch) => {
+    dispatch(fetchUserRequest());
+    await axios
+      .put("http://localhost:9000/" + id, user)
+      .then((response) => {
+        const users = response.data;
+        console.log("users==>", users);
+        console.log("RESPONSE==>", response);
+        return dispatch(fetchUserSuccess(users));
+      })
+      .catch((error) => {
+        dispatch(fetchUserFailure(error.msg));
+      });
+  };
+};
 
 export const deleteUsers = async (id) => {
   return await axios.delete(`${usersUrl}/${id}`);

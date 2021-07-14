@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { Component, useEffect, useState, useRef } from "react";
 import { connect } from "react-redux";
 import { deleteUsers, fetchUsers, updateUsers } from "../redux";
 import UserContainerForm from "./UserContainerForm";
@@ -19,15 +19,15 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import childComponent from "./UserContainerUpdate";
 import UserContainerUpdate from "./UserContainerUpdate";
 import SearchField from "react-search-field";
-// import { Modal } from "re";
-// const history = useHistory();
+// import SearchBar from "./SearchBar";
+// import SearchPage from "./searchPage";
+import axios from "axios";
 
 function UserContainer({ userData, fetchUsers }, props) {
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [search, setSearch] = useState("");
   const [users, setUsers] = useState([]);
-  const [user, setUser] = useState({ name: "", age: "" });
-  const { name, age, email } = user;
+  // const [user, setUser] = useState([]);
+  const inputEl = useRef("");
+  // const { name, age, email } = user;
   useEffect(() => {
     fetchUsers();
     setUsers(userData);
@@ -50,14 +50,23 @@ function UserContainer({ userData, fetchUsers }, props) {
     history.push("/adduser");
     // <UserContainerForm />;
   };
-  const updateUser = async () => {
-    <Redirect to="/updateuser/${user._id}" />;
-    history.push("/adduser");
-    // <UserContainerForm />;
-  };
-  const getDataFromAPI = () => {
-    console.log("Options Fetched from API");
 
+  const filterContent = (users, searchTerm) => {
+    const result = users.filter((user) =>
+      user.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    console.log("result", result);
+    setUsers(result);
+  };
+  const onValueChange = (e) => {
+    // console.log(e.currentTarget.value);
+    const searchTerm = e.currentTarget.value;
+    fetchUsers();
+    // axios.get("http://localhost:9000/").then((response) => {
+    if (userData) {
+      console.log("users for search", userData);
+      filterContent(userData, searchTerm);
+    }
     // });
   };
 
@@ -65,22 +74,7 @@ function UserContainer({ userData, fetchUsers }, props) {
     <div>
       <Router>
         <h2>Users List</h2>
-        <div className="searchForm">
-          <form>
-            <input
-              type="text"
-              id="filter"
-              placeholder="Search for..."
-              ref={(input) => (this.search = input)}
-              onChange={this.handleInputChange}
-            />
-          </form>
-          <div>
-            {userData.map((i) => (
-              <p>{i.name}</p>
-            ))}
-          </div>
-        </div>
+
         <div className="container text-right">
           <Link to={{ pathname: `/adduser` }}>
             <button onClick={addUser} className="btn btn-primary btn-md m-1  ">
@@ -88,8 +82,22 @@ function UserContainer({ userData, fetchUsers }, props) {
             </button>
           </Link>
         </div>
+        <div className="container mb-10 text-left">
+          <div className="w-75 mb-10  justify-content-left ui icon input">
+            {/* <SearchPage /> */}
+            <input
+              // ref={inputEl}
+              type="search "
+              placeholder="Search Users"
+              className="mb-7 form-control  "
+              // v
+              name="searchTerm"
+              onChange={onValueChange}
+            />
+          </div>
+        </div>
         <div className=" container ">
-          <table className="table  table-striped justify-content-center">
+          <table className="table mt-5 table-striped justify-content-center">
             <thead>
               <tr>
                 <th>Name</th>

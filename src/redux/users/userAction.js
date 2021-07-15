@@ -25,7 +25,13 @@ export const fetchUsers = () => {
       .get("http://localhost:9000/")
       .then((response) => {
         const users = response.data;
+        console.log("file: userAction.js ~ line 28 ~ .then ~ users", users);
+
         dispatch(fetchUserSuccess(users));
+        console.log(
+          "file: userAction.js ~ line 31 ~ .then ~ fetchUserSuccess(users)",
+          fetchUserSuccess(users)
+        );
       })
       .catch((error) => {
         dispatch(fetchUserFailure(error.msg));

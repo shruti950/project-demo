@@ -29,8 +29,12 @@ function UserContainerForm() {
   const addUser = async (e) => {
     // if (window.confirm(`Are you sure you want to Update ?`))
     // e.preventDefault();
-    await insertUsers(user);
-    history.push("/home");
+    if (!name || !age || !email) {
+      alert("Please add all the details");
+    } else {
+      await insertUsers(user);
+      history.push("/home");
+    }
   };
   return (
     <div className="container ">

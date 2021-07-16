@@ -1,6 +1,9 @@
 import logo from "./logo.svg";
 import "./App.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/css/bootstrap.css";
+
+// import "bootstrap/dist/css/bootstrap-responsive.css";
 import UserContainer from "./components/UserContainer";
 import { Provider } from "react-redux";
 import store from "./redux/userStore";
@@ -26,6 +29,7 @@ function App() {
           {/* <Header /> */}
           <Switch>
             <Route path="/home" component={UserContainer} />
+            <Route path="/home/:page" component={UserContainer} />
             <Route path="/adduser" component={UserContainerForm} />
             <Route path="/updateuser/:id" component={UserContainerUpdate} />
             <Redirect to="/home" />

@@ -54,7 +54,17 @@ const usersUrl = "http://localhost:9000";
 //   };
 // };
 export const insertUsers = async (user) => {
-  return await axios.post(`${usersUrl}`, user);
+  return await axios
+    .post(`${usersUrl}`, user)
+    .then((response) => {
+      console.log(
+        "file: userAction.js ~ line 58 ~ returnawaitaxios.post ~ response",
+        response
+      );
+    })
+    .catch((error) => {
+      console.log("Bad request");
+    });
 };
 export const updateUsers = async (id, user) => {
   return await axios.put(`${usersUrl}/${id}`, user);

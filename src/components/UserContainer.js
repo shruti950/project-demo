@@ -27,8 +27,20 @@ function UserContainer({ userData, fetchUsers }, props) {
   // const { name, age, email } = user;
   const history = useHistory();
   useEffect(() => {
-    getAllUsers();
+    // getAllUsers();
     getData();
+    fetchUsers();
+    setUsers(userData);
+  }, []);
+  // useEffect(() => {
+  //   fetchUsers();
+  // });
+  useEffect(() => {
+    getData();
+    console.log(
+      "file: userContainer.js ~ line 43~ useEffect ~ getData();",
+      getData()
+    );
     console.log("users 33 userData", users, userData);
   }, [offset]);
   console.log("userData", userData);
@@ -46,7 +58,7 @@ function UserContainer({ userData, fetchUsers }, props) {
   const getData = async () => {
     const res = await axios.get(`http://localhost:9000/`);
     const data = res.data;
-    // setUsers(data);
+    setUsers(data);
     console.log(
       "file: userContainer.js ~ line 54 ~ getData ~ data ",
       data,
@@ -56,7 +68,9 @@ function UserContainer({ userData, fetchUsers }, props) {
     const indexOfFirstTodo = indexOfLastTodo - perPage;
     const slice = data.slice(indexOfFirstTodo, indexOfLastTodo);
     console.log("file: userContainer.js ~ line 56 ~ getData ~ slice", slice);
+
     setUsers(slice);
+
     setPageCount(Math.ceil(data.length / perPage));
   };
 
@@ -88,10 +102,8 @@ function UserContainer({ userData, fetchUsers }, props) {
     // });
   };
   const getAllUsers = async () => {
-    const res = await axios.get(`http://localhost:9000/`);
-    const data = res.data;
-    console.log("response data", data);
-    setUsers(data);
+    fetchUsers();
+    setUsers(userData);
     console.log("users 97", data);
   };
 
@@ -106,14 +118,14 @@ function UserContainer({ userData, fetchUsers }, props) {
             </button>
           </Link>
         </div>
-        <div className="container mb-10 text-left">
-          <div className="w-75 mb-10  justify-content-left ui icon input">
+        <div className="container mt-mb-10 text-left">
+          <div className="w-100 mt-mb-10  justify-content-left ui icon input">
             {/* <SearchPage /> */}
             <input
               // ref={inputEl}
               type="search "
               placeholder="Search Users"
-              className="mb-7 form-control  "
+              className="mt-mb-7 form-control  "
               // v
               name="searchTerm"
               onChange={onValueChange}

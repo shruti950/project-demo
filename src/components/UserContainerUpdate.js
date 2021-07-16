@@ -12,6 +12,7 @@ const initialState = {
 };
 function UserContainerUpdate({ userData, fetchUser }, props) {
   const [user, setUser] = useState(initialState);
+  const [users, setUsers] = useState();
   const { name, age, email } = user;
   const { id } = useParams();
   let history = useHistory();
@@ -25,29 +26,38 @@ function UserContainerUpdate({ userData, fetchUser }, props) {
   );
   useEffect(() => {
     fetchUser(id);
-
-    // setUser({ user: userData });
+    setUsers(userData);
+    // setUser({ user: userData });s
   }, []);
 
-  console.log(
-    "params DAta",
-    useParams(),
-    userData.name,
-    userData.age,
-    userData.email
-  );
+  console.log("params DAta", useParams(), users, userData.age, userData.email);
   const onValueChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
-    console.log("user==>", user.email);
+    console.log("user==>", user.name, user.age, user.email);
   };
 
   console.log("out side update state", id, name, age, email);
 
-  console.log("user======>", user);
-  const editUserDetails = async () => {
-    // if (window.confirm(`Are you sure you want to Update ?`))
-    await updateUsers(id, user);
-    history.push("/home");
+  console.log("user======>", userData, users, user);
+  const editUserDetails = async (e) => {
+    console.log("in else part", user);
+    if (!name || !age || !email) {
+      if (!name) {
+        name = userData.name;
+      }
+      if (!age) {
+        age = userData.age;
+      }
+      if (!email) {
+        email = userData.email;
+      }
+      await updateUsers(id, user);
+      history.push("/home");
+    } else {
+      console.log("in else part", user);
+      await updateUsers(id, user);
+      history.push("/home");
+    }
   };
   return (
     <div className="container ">
@@ -56,7 +66,7 @@ function UserContainerUpdate({ userData, fetchUser }, props) {
         console.log("map user ==========>", getuser);
         return (
           <div key={getuser._id}>
-            <form>
+            <form onSubmit={() => editUserDetails()}>
               <div className="form-group text-left">
                 <label>Name:</label>
                 <input
@@ -92,7 +102,7 @@ function UserContainerUpdate({ userData, fetchUser }, props) {
               <div className="form-group text-left">
                 <button
                   className="btn btn-primary"
-                  onClick={() => editUserDetails()}
+                  // onClick={() => editUserDetails()}
                   type="submit"
                 >
                   Update

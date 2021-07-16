@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Component, useState, useEffect } from "react";
 import { connect } from "react-redux";
 import {
   useLocation,
@@ -7,7 +7,7 @@ import {
   useHistory,
   Link,
 } from "react-router-dom";
-import { insertUsers } from "../redux";
+import { deleteUsers, fetchUsers, insertUsers } from "../redux";
 import HeaderUser from "./HeaderUser";
 import UserContainer from "./UserContainer";
 const initialState = {
@@ -15,27 +15,57 @@ const initialState = {
   age: "",
   email: "",
 };
-function UserContainerForm() {
+function UserContainerForm({ userData, fetchUsers }) {
   const [user, setUser] = useState(initialState);
+  const [users, setUsers] = useState([]);
   const { name, age, email } = user;
   const { id } = useParams();
   let history = useHistory();
-
+  useEffect(() => {
+    fetchUsers();
+    setUsers(userData);
+    // console.log("users 33 userData", users, userData);
+  }, []);
   const onValueChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
     console.log("user==>", user.email);
   };
 
   const addUser = async (e) => {
-    // if (window.confirm(`Are you sure you want to Update ?`))
-    // e.preventDefault();
     if (!name || !age || !email) {
       alert("Please add all the details");
     } else {
-      await insertUsers(user);
-      history.push("/home");
+      fetchUsers();
+      console.log(
+        "file: UserContainerForm.js ~ line 45 ~ addUser ~ userData",
+        userData
+      );
+      setUsers(userData);
+      console.log("users in add", users);
+      const existEmail = users.filter((existingEmail) => {
+        // console.log(email == existingEmail.email, typeof existingEmail.email);
+        if (email === existingEmail.email) {
+          return true;
+        }
+      });
+      const map = existEmail.map((item) => {
+        if (item.email === email) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+      console.log("map function ", map);
+      if (map.includes(true)) {
+        alert("Email already Exists");
+      } else {
+        await insertUsers(user);
+        history.push("/home");
+      }
+      //
     }
   };
+
   return (
     <div className="container ">
       <HeaderUser />
@@ -157,8 +187,12 @@ function UserContainerForm() {
 //   }
 // }
 const mapStateToProps = (state) => {
+  console.log("state===>", state);
   return {
     userData: state.users,
   };
 };
-export default connect(mapStateToProps, { insertUsers })(UserContainerForm);
+
+export default connect(mapStateToProps, { fetchUsers, insertUsers })(
+  UserContainerForm
+);

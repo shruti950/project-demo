@@ -3,14 +3,16 @@ import {
   FETCH_USER_SUCCESS,
   FETCH_USER_FAILURE,
 } from "./userType";
+import { persistReducer } from "redux-persist";
 const initialState = {
-  loading: "false",
+  loading: "",
   users: [],
   error: "",
 };
 
 const reducer = (state = initialState, action) => {
   const { type, payload } = action;
+  console.log("action in reducer", action, payload, type);
   switch (type) {
     case FETCH_USER_REQUEST:
       return { ...state, loading: true };
@@ -23,4 +25,5 @@ const reducer = (state = initialState, action) => {
       return state;
   }
 };
+
 export default reducer;

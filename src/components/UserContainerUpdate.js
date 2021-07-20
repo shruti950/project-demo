@@ -1,8 +1,8 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { fetchUser, updateUsers } from "../redux";
 // import React from 'react'
-import { useLocation, useParams, Redirect, useHistory } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import HeaderUser from "./HeaderUser";
 // const location = useLocation();
 const initialState = {
@@ -27,7 +27,6 @@ function UserContainerUpdate({ userData, fetchUser }, props) {
   useEffect(() => {
     fetchUser(id);
     setUsers(userData);
-    // setUser({ user: userData });s
   }, []);
 
   console.log("params DAta", useParams(), users, userData.age, userData.email);

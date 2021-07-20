@@ -26,12 +26,8 @@ export const fetchUsers = () => {
       .then((response) => {
         const users = response.data;
         console.log("file: userAction.js ~ line 28 ~ .then ~ users", users);
-
+        // localStorage.setItem("users", JSON.stringify(users));
         dispatch(fetchUserSuccess(users));
-        console.log(
-          "file: userAction.js ~ line 31 ~ .then ~ fetchUserSuccess(users)",
-          fetchUserSuccess(users)
-        );
       })
       .catch((error) => {
         dispatch(fetchUserFailure(error.msg));
@@ -111,11 +107,13 @@ export const deleteUsers = async (id) => {
 //   };
 // };
 export const fetchUserRequest = () => {
+  console.log("is call.... fetchUserRequest");
   return {
     type: FETCH_USER_REQUEST,
   };
 };
 export const fetchUserSuccess = (users) => {
+  console.log("is call.... fetchUserSuccess");
   return {
     type: FETCH_USER_SUCCESS,
     payload: users,
@@ -123,6 +121,7 @@ export const fetchUserSuccess = (users) => {
 };
 
 export const fetchUserFailure = (error) => {
+  console.log("is call.... fetchUserFailure");
   return {
     type: FETCH_USER_FAILURE,
     payload: error,

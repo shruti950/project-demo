@@ -4,6 +4,8 @@ import thunk from "redux-thunk";
 import reducer from "./users/userReducer";
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+import { composeWithDevTools } from "redux-devtools-extension";
+
 const config = {
   key: "root",
   storage: storage,
@@ -11,7 +13,15 @@ const config = {
   //   transforms: [TransformCredentials],
 };
 const persisted = persistReducer(config, reducer);
-
-const store = createStore(persisted, applyMiddleware(logger, thunk));
+const composerEnhancer = composeWithDevTools({
+  name: `Redux`,
+  realtime: true,
+  trace: true,
+  traceLimit: 25,
+});
+const store = createStore(
+  persisted,
+  composerEnhancer(applyMiddleware(logger, thunk))
+);
 
 export default store;

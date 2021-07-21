@@ -1,4 +1,3 @@
-import logo from "./logo.svg";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/css/bootstrap.css";
@@ -12,19 +11,20 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link,
-  useRouteMatch,
-  useParams,
   Redirect,
 } from "react-router-dom";
-import UserContainerUpdate from "./components/UserContainerUpdate";
+// import UserContainerUpdate from "./components/UserContainerUpdate";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
 // import Sample from "./components/Sample";
 import Modal from "react-modal";
+// import { useHistory } from "react-router-dom";
+import Post from "./components/Post";
 Modal.setAppElement("#root");
 function App() {
   const persistor = persistStore(store);
+  // let history = useHistory();
+  // const { id } = useParams();
   return (
     <div className="App">
       <Provider store={store}>
@@ -36,7 +36,7 @@ function App() {
               <Route path="/home" component={UserContainer} />
               <Route path="/home/:page" component={UserContainer} />
               <Route path="/adduser" component={UserContainerForm} />
-              <Route path="/updateuser/:id" component={UserContainerUpdate} />
+              <Route path="/updateuser/:id" component={Post} />
               <Redirect to="/home" />
             </Switch>
           </Router>

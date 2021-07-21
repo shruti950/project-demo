@@ -1,15 +1,9 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import {
-  useLocation,
-  useParams,
-  Redirect,
-  useHistory,
-  Link,
-} from "react-router-dom";
-import { deleteUsers, fetchUsers, insertUsers } from "../redux";
+import { useHistory, Link } from "react-router-dom";
+import { fetchUsers, insertUsers } from "../redux";
 import HeaderUser from "./HeaderUser";
-import UserContainer from "./UserContainer";
+// import UserContainer from "./UserContainer";
 const initialState = {
   name: "",
   age: "",
@@ -19,7 +13,7 @@ function UserContainerForm({ userData, fetchUsers }) {
   const [user, setUser] = useState(initialState);
   const [users, setUsers] = useState([]);
   const { name, age, email } = user;
-  const { id } = useParams();
+  // const { id } = useParams();
   let history = useHistory();
   useEffect(() => {
     fetchUsers();
@@ -60,6 +54,7 @@ function UserContainerForm({ userData, fetchUsers }) {
         alert("Email already Exists");
       } else {
         await insertUsers(user);
+        history.push("/home");
         history.push("/home");
       }
       //

@@ -62,26 +62,30 @@ export const insertUsers = async (user) => {
       console.log("Bad request");
     });
 };
-export const updateUsers = async (id, user) => {
-  return await axios.put(`${usersUrl}/${id}`, user);
-};
 // export const updateUsers = async (id, user) => {
-//   console.log("updated user", id, user.name, user.age);
-//   return async (dispatch) => {
-//     dispatch(fetchUserRequest());
-//     await axios
-//       .put("http://localhost:9000/" + id, user)
-//       .then((response) => {
-//         const users = response.data;
-//         console.log("users==>", users);
-//         console.log("RESPONSE==>", response);
-//         return dispatch(fetchUserSuccess(users));
-//       })
-//       .catch((error) => {
-//         dispatch(fetchUserFailure(error.msg));
-//       });
-//   };
+//   console.log("id and user", id, user);
+//   return await axios
+//     .put(`${usersUrl}/${id}`, user)
+//     .catch((error) => console.log("error", error));
 // };
+export const updateUsers = async (id, user) => {
+  console.log("updated user", id, user.name, user.age);
+  return async (dispatch) => {
+    dispatch(fetchUserRequest());
+    await axios
+      .put("http://localhost:9000/" + id, user)
+      .then((response) => {
+        const users = response.data;
+        console.log("users==>", users);
+        console.log("RESPONSE==>", response);
+        return dispatch(fetchUserSuccess(users));
+      })
+      .catch((error) => {
+        dispatch(fetchUserFailure(error.msg));
+        console.log("error", error);
+      });
+  };
+};
 
 export const deleteUsers = async (id) => {
   return await axios.delete(`${usersUrl}/${id}`);

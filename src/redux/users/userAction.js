@@ -64,25 +64,24 @@ export const insertUsers = async (user) => {
 };
 // export const updateUsers = async (id, user) => {
 //   console.log("id and user", id, user);
+
 //   return await axios
 //     .put(`${usersUrl}/${id}`, user)
 //     .catch((error) => console.log("error", error));
 // };
 export const updateUsers = async (id, user) => {
-  console.log("updated user", id, user.name, user.age);
-  return async (dispatch) => {
+  console.log("updated user", id, user);
+  return (dispatch) => {
     dispatch(fetchUserRequest());
-    await axios
+    axios
       .put("http://localhost:9000/" + id, user)
       .then((response) => {
         const users = response.data;
-        console.log("users==>", users);
-        console.log("RESPONSE==>", response);
         return dispatch(fetchUserSuccess(users));
       })
       .catch((error) => {
-        dispatch(fetchUserFailure(error.msg));
         console.log("error", error);
+        return dispatch(fetchUserFailure(error));
       });
   };
 };
@@ -113,21 +112,27 @@ export const deleteUsers = async (id) => {
 export const fetchUserRequest = () => {
   console.log("is call.... fetchUserRequest");
   return {
+    // dispatch({
     type: FETCH_USER_REQUEST,
+    // });
   };
 };
 export const fetchUserSuccess = (users) => {
   console.log("is call.... fetchUserSuccess");
   return {
+    // dispatch({
     type: FETCH_USER_SUCCESS,
     payload: users,
+    // });
   };
 };
 
 export const fetchUserFailure = (error) => {
   console.log("is call.... fetchUserFailure");
   return {
+    // dispatch({
     type: FETCH_USER_FAILURE,
     payload: error,
+    // });
   };
 };

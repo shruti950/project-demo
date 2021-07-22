@@ -20,13 +20,17 @@ import { persistStore } from "redux-persist";
 import Modal from "react-modal";
 // import { useHistory } from "react-router-dom";
 import Post from "./components/Post";
+import UserContainerUpdate from "./components/UserContainerUpdate";
 Modal.setAppElement("#root");
 function App() {
   const persistor = persistStore(store);
   // let history = useHistory();
   // const { id } = useParams();
   return (
-    <div className="App">
+    <div
+      className="App background-red"
+      style={{ backgroundColor: "transparent" }}
+    >
       <Provider store={store}>
         {/* <PersistGate persistor={persistor}> */}
         <PersistGate loading={null} persistor={persistor}>
@@ -36,6 +40,7 @@ function App() {
               <Route path="/home" component={UserContainer} />
               <Route path="/home/:page" component={UserContainer} />
               <Route path="/adduser" component={UserContainerForm} />
+              {/* <Route path="/updateuser/:id" component={UserContainerUpdate} /> */}
               <Route path="/updateuser/:id" component={Post} />
               <Redirect to="/home" />
             </Switch>

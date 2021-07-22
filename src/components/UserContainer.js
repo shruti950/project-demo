@@ -37,6 +37,7 @@ class UserContainer extends Component {
     this.getData();
   }
   componentWillMount() {
+    // this.refreshPage();
     this.props.fetchUsers();
     console.log("userData", this.props.userData);
 
@@ -114,7 +115,7 @@ class UserContainer extends Component {
   };
   render() {
     return (
-      <div>
+      <div className="container App">
         <Router>
           <h2>Users List</h2>
           <div className="container text-right">
@@ -125,23 +126,32 @@ class UserContainer extends Component {
               >
                 ADD USER
               </button>
+              <button
+                type="button"
+                className="btn btn-outline-danger btn-rounded waves-effect"
+              >
+                <i className="fas fa-train pr-2" aria-hidden="true"></i>Danger
+              </button>
             </Link>
           </div>
           <div className="container mt-mb-10 text-left">
             <div className="w-100 mt-mb-10  justify-content-left ui icon input">
               {/* <SearchPage /> */}
-              <input
-                // ref={inputEl}
-                type="search "
-                placeholder="Search Users"
-                className="mt-mb-7 form-control  "
-                // v
-                name="searchTerm"
-                onChange={this.onValueChange}
-              />
+              <span className="icon-input-btn">
+                <i className="fa fa-search"></i>
+                <input
+                  // ref={inputEl}
+                  type="search "
+                  placeholder="Search Users"
+                  className="mt-mb-7 form-control  "
+                  // v
+                  name="searchTerm"
+                  onChange={this.onValueChange}
+                />
+              </span>
             </div>
           </div>
-          <div className=" container ">
+          <div className=" container  ">
             <table className="table mt-5 table-striped justify-content-center">
               <thead>
                 <tr>
@@ -178,6 +188,7 @@ class UserContainer extends Component {
                         }}
                         className="btn btn-danger btn-sm m-1 "
                       >
+                        <i className="fa fa-trash"></i>
                         DELETE
                       </button>
                     </td>

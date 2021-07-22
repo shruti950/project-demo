@@ -14,6 +14,7 @@
 //         age: "",
 //         email: "",
 //       },
+//       users: [],
 //       id: "",
 //     };
 //   }
@@ -25,36 +26,78 @@
 //     });
 //     console.log("user==>", this.state.user);
 //   };
+//   // componentDidMount() {
+//   //   const id = this.props.id;
+//   //   this.setState({ id: id });
+//   //   console.log("idd", id, this.props.userData, this.props.userData.name);
+//   //   this.props.fetchUser(id);
+//   // }
 //   componentDidMount() {
+//     // this.props.fetchUsers();
+//     // console.log("userData", this.props.userData);
+//     // this.setState({ users: this.props.userData, offset: 1 });
 //     const id = this.props.id;
-//     this.setState({ id: id });
-//     console.log("idd", id, this.props.userData, this.props.userData.name);
+//     // this.setState({ id: id });
 //     this.props.fetchUser(id);
+//     console.log(
+//       "userData in component did mount",
+//       this.props.userData,
+//       this.props.id
+//     );
+//     this.setState({ users: this.props.userData, id: id });
+//     console.log(
+//       "users in component did mount",
+//       this.state.users,
+//       this.state.id,
+//       this.props
+//     );
 //   }
-//   getId = () => {};
-//   editUserDetails = (e) => {
-//     console.log("in edit user part", this.state.user);
-//     // if (
-//     //   !this.state.user.name ||
-//     //   !this.state.user.age ||
-//     //   !this.state.user.email
-//     // ) {
-//     //   if (!this.state.user.name) {
-//     //     this.state.user.name = this.props.userData.name;
-//     //   }
-//     //   if (!this.state.user.age) {
-//     //     this.state.user.age = this.props.userData.age;
-//     //   }
-//     //   if (!this.state.user.email) {
-//     //     this.state.user.email = this.props.userData.email;
-//     // }
-//     // await updateUsers(this.state.id, this.state.user);
-//     // history.push("/home");
-//     // } else {
-//     console.log("in else part", this.state.user);
-//     this.props.updateUsers(this.state.id, this.state.user);
-//     // history.push("/home");
-//     // }
+//   componentWillMount() {
+//     const id = this.props.id;
+//     // this.setState({ id: id });
+//     this.props.fetchUser(id);
+//     console.log(
+//       "userData in component will mount",
+//       this.props.userData,
+//       this.props.id,
+//       this.props
+//     );
+//     this.setState({ users: this.props.userData, id: id });
+//     console.log(
+//       "users in component will mount",
+//       this.state.id,
+//       this.state.users
+//     );
+//     // this.getData();
+//   }
+//   editUserDetails = async (e) => {
+//     const { user, id, users } = this.state;
+//     const { updateUsers, userData, history } = this.props;
+//     console.log("in else part", user);
+//     console.log("users", users);
+//     if (!user.name || !user.age || !user.email) {
+//       if (!user.name) {
+//         // const uname = users.name;
+//         user.name = userData[0].name;
+//         console.log("user name", user.name);
+//       }
+//       if (!user.age) {
+//         // age = userData.map((user) => user.age);
+//         user.age = userData[0].age;
+//         console.log("user age", user);
+//       }
+//       if (!user.email) {
+//         // email = userData.map((user) => user.email);
+//         user.email = userData[0].email;
+//         console.log("user in if ", user);
+//         updateUsers(id, user);
+//         // history.push("/home");
+//       }
+//     } else {
+//       console.log("in else part", user);
+//       updateUsers(id, user);
+//       // history.push("/home");
+//     }
 //   };
 //   render() {
 //     return (
@@ -99,7 +142,7 @@
 //                 <div className="form-group text-left">
 //                   <button
 //                     className="btn btn-primary"
-//                     onClick={() => this.editUserDetails()}
+//                     // onClick={this.editUserDetails()}
 //                     type="submit"
 //                   >
 //                     Update
@@ -113,10 +156,21 @@
 //     );
 //   }
 // }
-
+// const mapStateToProps = (state) => {
+//   console.log("state", state);
+//   return {
+//     userData: state.users,
+//   };
+// };
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     fetchUser: (id) => dispatch(fetchUser(id)),
+//     updateUsers: (id, user) => dispatch(updateUsers(id, user)),
+//   };
+// };
 // export default connect(
-//   (state) => ({ userData: state.users, loadingData: state.loading }),
-//   { fetchUser, updateUsers }
+//   mapStateToProps,
+//   mapDispatchToProps
 // )(UserContainerUpdate);
 import React, { Component, useState, useEffect } from "react";
 import { connect } from "react-redux";
@@ -132,7 +186,7 @@ const initialState = {
 };
 function UserContainerUpdate({ userData, fetchUser }, props) {
   const [user, setUser] = useState(initialState);
-  const [users, setUsers] = useState();
+  const [users, setUsers] = useState([]);
   const { name, age, email } = user;
   const { id } = useParams();
   let history = useHistory();
@@ -146,8 +200,8 @@ function UserContainerUpdate({ userData, fetchUser }, props) {
   );
   useEffect(() => {
     fetchUser(id);
-    setUsers(userData);
-    console.log("user in useeffect", users);
+    // setUsers(userData);
+    // console.log("user in useeffect", users);
   }, []);
 
   console.log("params DAta", useParams(), users, userData.age, userData.email);
@@ -158,33 +212,32 @@ function UserContainerUpdate({ userData, fetchUser }, props) {
 
   console.log("out side update state", id, name, age, email);
 
-  console.log("user======>", userData, users, user);
+  console.log("user======>", userData[0].name, users, user);
   const editUserDetails = (e) => {
     console.log("in else part", user);
-    setUsers(userData);
     console.log("users", users);
-    if (!name || !age || !email) {
-      if (!name) {
+    if (!user.name || !user.age || !user.email) {
+      if (!user.name) {
         // const uname = users.name;
-        // name = uname[0];
-        // users.push(userData);
-
-        console.log("user name", users);
+        user.name = userData[0].name;
+        console.log("user name", user.name);
       }
-      if (!age) {
+      if (!user.age) {
         // age = userData.map((user) => user.age);
+        user.age = userData[0].age;
         console.log("user age", user);
       }
       if (!email) {
         // email = userData.map((user) => user.email);
-        console.log("user email", user);
+        user.email = userData[0].email;
+        console.log("user in if ", user);
         updateUsers(id, user);
-        // history.push("/home");
+        history.push("/home");
       }
     } else {
       console.log("in else part", user);
       updateUsers(id, user);
-      // history.push("/home");
+      history.push("/home");
     }
   };
   return (
@@ -193,7 +246,7 @@ function UserContainerUpdate({ userData, fetchUser }, props) {
       {userData.map((getuser) => {
         return (
           <div key={getuser._id}>
-            <form onSubmit={editUserDetails()}>
+            <form onSubmit={() => editUserDetails()}>
               <div className="form-group text-left">
                 <label>Name:</label>
                 <input
@@ -249,7 +302,13 @@ const mapStateToProps = (state) => {
     userData: state.users,
   };
 };
+const mapDispatchToProps = (dispatch) => {
+  return {
+    fetchUser: (id) => dispatch(fetchUser(id)),
+    updateUsers: (id, user) => dispatch(updateUsers(id, user)),
+  };
+};
 export default connect(
   (state) => ({ userData: state.users, loadingData: state.loading }),
-  { fetchUser, updateUsers }
+  mapDispatchToProps
 )(UserContainerUpdate);

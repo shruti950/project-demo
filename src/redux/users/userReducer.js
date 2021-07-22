@@ -3,7 +3,7 @@ import {
   FETCH_USER_SUCCESS,
   FETCH_USER_FAILURE,
 } from "./userType";
-import { persistReducer } from "redux-persist";
+// import { persistReducer } from "redux-persist";
 const initialState = {
   loading: "",
   users: [],

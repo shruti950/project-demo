@@ -19,9 +19,6 @@ const composerEnhancer = composeWithDevTools({
   trace: true,
   traceLimit: 25,
 });
-const store = createStore(
-  persisted,
-  composerEnhancer(applyMiddleware(logger, thunk))
-);
+const store = createStore(persisted, composerEnhancer(applyMiddleware(thunk)));
 
 export default store;

@@ -40,8 +40,8 @@ function App() {
               <Route path="/home" component={UserContainer} />
               <Route path="/home/:page" component={UserContainer} />
               <Route path="/adduser" component={UserContainerForm} />
-              {/* <Route path="/updateuser/:id" component={UserContainerUpdate} /> */}
-              <Route path="/updateuser/:id" component={Post} />
+              <Route path="/updateuser/:id" component={UserContainerUpdate} />
+              {/* <Route path="/updateuser/:id" component={Post} /> */}
               <Redirect to="/home" />
             </Switch>
           </Router>

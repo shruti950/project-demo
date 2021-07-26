@@ -10,11 +10,11 @@ export const fetchUser = (user) => {
     axios
       .get("http://localhost:9000/" + user)
       .then((response) => {
-        const users = response.data;
-        dispatch(fetchUserSuccess(users));
+        const user = response.data;
+        dispatch(fetchUserSuccess(user));
       })
       .catch((error) => {
-        dispatch(fetchUserFailure(error.msg));
+        dispatch(fetchUserFailure(error));
       });
   };
 };
@@ -36,12 +36,17 @@ export const fetchUsers = () => {
 };
 const usersUrl = "http://localhost:9000";
 // export const insertUsers = (user) => {
+//   console.log("🚀 ~ file: userAction.js ~ line 39 ~ .then ~ users", user);
 //   return (dispatch) => {
 //     dispatch(fetchUserRequest());
 //     axios
 //       .post("http://localhost:9000/", user)
 //       .then((response) => {
 //         const users = response.data;
+//         console.log(
+//           "🚀 ~ file: userAction.js ~ line 46 ~ .then ~ users",
+//           users
+//         );
 //         dispatch(fetchUserSuccess(users));
 //       })
 //       .catch((error) => {
@@ -50,6 +55,7 @@ const usersUrl = "http://localhost:9000";
 //   };
 // };
 export const insertUsers = async (user) => {
+  console.log("🚀 ~ file: userAction.js ~ line 46 ~ .then ~ users", user);
   return await axios
     .post(`${usersUrl}`, user)
     .then((response) => {
@@ -69,20 +75,32 @@ export const insertUsers = async (user) => {
 //     .put(`${usersUrl}/${id}`, user)
 //     .catch((error) => console.log("error", error));
 // };
-export const updateUsers = async (id, user) => {
+// export const updateUsers = (id, user) => {
+//   console.log("updated user", id, user);
+//   return async (dispatch) => {
+//     dispatch(fetchUserRequest());
+//     await axios
+//       .put("http://localhost:9000/" + id, user)
+//       .then((response) => {
+//         const users = response.data;
+//         return dispatch(fetchUserSuccess(users));
+//       })
+//       .catch((error) => {
+//         console.log("error", error);
+//         return dispatch(fetchUserFailure(error));
+//       });
+//   };
+// };
+export const updateUsers = (id, user) => {
   console.log("updated user", id, user);
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(fetchUserRequest());
-    axios
-      .put("http://localhost:9000/" + id, user)
-      .then((response) => {
-        const users = response.data;
-        return dispatch(fetchUserSuccess(users));
-      })
-      .catch((error) => {
-        console.log("error", error);
-        return dispatch(fetchUserFailure(error));
-      });
+    try {
+      const response = await axios.put("http://localhost:9000/" + id, user);
+      dispatch(fetchUserSuccess(response.data));
+    } catch (error) {
+      dispatch(fetchUserFailure(error));
+    }
   };
 };
 
@@ -114,6 +132,7 @@ export const fetchUserRequest = () => {
   return {
     // dispatch({
     type: FETCH_USER_REQUEST,
+
     // });
   };
 };

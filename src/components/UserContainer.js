@@ -24,6 +24,8 @@ class UserContainer extends Component {
     };
   }
   componentDidMount() {
+    const { loadingData } = this.props;
+
     this.props.fetchUsers();
     console.log("userData", this.props.userData);
     this.setState({ users: this.props.userData, offset: 1 });
@@ -34,16 +36,21 @@ class UserContainer extends Component {
     );
     this.setState({ offset: 1 });
     console.log("offset", this.state.offset);
+    // if (loadingData === false) {
     this.getData();
+    // }
   }
   componentWillMount() {
     // this.refreshPage();
-    this.props.fetchUsers();
-    console.log("userData", this.props.userData);
+    const { loadingData } = this.props;
+    if (loadingData === false) {
+      this.props.fetchUsers();
+      console.log("userData", this.props.userData);
 
-    this.setState({ users: this.props.userData, offset: 1 });
-    console.log("users in component will mount", this.state.users);
-    // this.getData();
+      this.setState({ users: this.props.userData, offset: 1 });
+      console.log("users in component will mount", this.state.users);
+      // this.getData();
+    }
   }
 
   handlePageClick = (e) => {
@@ -55,6 +62,7 @@ class UserContainer extends Component {
   };
   addUser = async () => {
     this.props.history.push("/adduser");
+    this.refreshPage();
     // <UserContainerForm />;
   };
   deleteUserData = async (id, name) => {
@@ -66,14 +74,20 @@ class UserContainer extends Component {
     this.props.fetchUsers();
     this.refreshPage();
   };
+  editUserData = async (id) => {
+    console.log("id vaman", id);
+    this.props.history.push(`/updateuser/${id}`);
+    this.refreshPage();
+  };
   refreshPage = () => {
     window.location.reload();
   };
   getData = async () => {
+    const { loadingData } = this.props;
+    console.log("loading in getDAta", loadingData);
+    // if (loadingData === false) {
     const data = this.props.userData || [];
     console.log("set pagination here.....", data);
-    // const newOffset = offset > 0 ? offset - 1 : 0;
-    // console.log("newOffset :: ", newOffset);
     const indexOfLastTodo = this.state.offset * this.state.perPage;
     const indexOfFirstTodo = indexOfLastTodo - this.state.perPage;
     const slice = data.slice(indexOfFirstTodo, indexOfLastTodo);
@@ -83,6 +97,7 @@ class UserContainer extends Component {
     console.log("users in getData", this.state.users);
     this.setState({ pageCount: Math.ceil(data.length / this.state.perPage) });
     // setPageCount(Math.ceil(data.length / perPage));
+    // }
   };
   filterContent = (users, searchTerm) => {
     console.log("searchterm", searchTerm);
@@ -126,12 +141,6 @@ class UserContainer extends Component {
               >
                 ADD USER
               </button>
-              <button
-                type="button"
-                className="btn btn-outline-danger btn-rounded waves-effect"
-              >
-                <i className="fas fa-train pr-2" aria-hidden="true"></i>Danger
-              </button>
             </Link>
           </div>
           <div className="container mt-mb-10 text-left">
@@ -174,7 +183,8 @@ class UserContainer extends Component {
                         }}
                       >
                         <button
-                          onClick={<Redirect to="/updateuser/${user._id}" />}
+                          // onClick={<Redirect to="/updateuser/${user._id}" />}
+                          onClick={() => this.editUserData(user._id)}
                           className="btn btn-success btn-sm m-1  "
                           // component={Link}
                           // to={`/updateuser/${user._id}`}
@@ -232,7 +242,10 @@ class UserContainer extends Component {
 //   };
 // };
 export default connect(
-  (state) => ({ userData: state.users, loadingData: state.loading }),
+  (state) => (
+    console.log("state", state),
+    { userData: state.users, loadingData: state.loading }
+  ),
   { fetchUsers }
 )(UserContainer);
 // import React, { Component, useEffect, useState, useRef } from "react";

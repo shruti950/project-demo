@@ -66,7 +66,7 @@ function Post() {
 //         setUsers(userData);
 //         console.log("users in add", users);
 //         const existEmail = users.filter((existingEmail) => {
-//           // console.log(email == existingEmail.email, typeof existingEmail.email);
+//           console.log(email == existingEmail.email, typeof existingEmail.email);
 //           if (email === existingEmail.email) {
 //             return true;
 //           }

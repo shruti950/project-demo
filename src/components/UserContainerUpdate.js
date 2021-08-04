@@ -17,6 +17,7 @@ class UserContainerUpdate extends Component {
       },
       users: [],
       id: "",
+      p: {},
     };
   }
   onChangeName = (e) => {

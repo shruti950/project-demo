@@ -21,9 +21,6 @@ import Modal from "react-modal";
 // import { useHistory } from "react-router-dom";
 import Post from "./components/Post";
 import UserContainerUpdate from "./components/UserContainerUpdate";
-import UserContainerUpdateHook from "./components/UserContainerUpdateHook";
-import UserContainerInsertHook from "./components/UserContainerInsertHook";
-import UserContainerHook from "./components/UserContainerHook";
 import UserContainerPaginationFrontend from "./components/UserContainerPaginationFrontend";
 Modal.setAppElement("#root");
 function App() {

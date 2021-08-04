@@ -38,26 +38,36 @@ class UserContainerForm extends Component {
       user: { ...prevState.user, email: email },
     }));
   };
-  submitHandler = (e) => {
-    e.preventDefault();
-    this.props.insertUsers(this.state.user);
+
+  componentDidMount() {
+    this.loadPage();
+  }
+  componentWillMount() {
+    this.loadPage();
+  }
+  loadPage = () => {
+    const { offset, perPage } = this.state;
+    const { userData, totalPage, fetchUsers, fetchAllUsers } = this.props;
+    fetchUsers();
+    this.setState({ users: this.props.userData, pageCount: totalPage });
   };
+
   addUser = async (e) => {
     const { users, user } = this.state;
     const { name, age, email } = this.state.user;
     const { userData, history } = this.props;
-
     if (!name || !age || !email) {
       alert("Please add all the details");
     } else {
-      fetchUsers();
-
+      this.props.fetchUsers();
       this.setState({ users: userData });
+
       const existEmail = userData.filter((existingEmail) => {
         if (email === existingEmail.email) {
           return true;
         }
       });
+
       const map = existEmail.map((item) => {
         if (item.email === email) {
           return true;
@@ -66,10 +76,13 @@ class UserContainerForm extends Component {
         }
       });
       if (map.includes(true)) {
+        e.preventDefault();
         alert("Email already Exists");
+        history.push("/adduser");
+        return;
       } else {
         history.push("/home");
-        return await insertUsers(user);
+        return await this.props.insertUsers(user);
 
         history.push("/home");
       }
@@ -82,7 +95,7 @@ class UserContainerForm extends Component {
     return (
       <div className="container ">
         <HeaderUser />
-        <form onSubmit={this.submitHandler}>
+        <form>
           <div className="form-group text-left">
             <label>Name:</label>
             <input
@@ -118,7 +131,7 @@ class UserContainerForm extends Component {
               <button
                 className="btn btn-primary"
                 type="submit"
-                onClick={() => this.addUser()}
+                onClick={(event) => this.addUser(event)}
               >
                 Submit
               </button>
@@ -131,11 +144,22 @@ class UserContainerForm extends Component {
 }
 
 const mapStateToProps = (state) => {
+  console.log(
+    "%c 🐻: mapStateToProps -> state ",
+    "font-size:16px;background-color:#f5b04a;color:black;",
+    state
+  );
   return {
     userData: state.users,
   };
 };
-
+const mapDispatchToProps = (dispatch) => {
+  return {
+    fetchUsers: () => dispatch(fetchUsers()),
+    // fetchAllUsers: () => dispatch(fetchAllUsers(1, 5)),
+    insertUsers: (user) => dispatch(insertUsers(user)),
+  };
+};
 export default connect(mapStateToProps, { fetchUsers, insertUsers })(
   UserContainerForm
 );

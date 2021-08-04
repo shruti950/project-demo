@@ -40,13 +40,8 @@ class UserContainer extends Component {
 
   loadPage = () => {
     const { offset, perPage } = this.state;
-
     const { userData, totalPage, fetchAllUsers } = this.props;
-
     const params = new URLSearchParams(window.location.search);
-
-    const pagep = parseInt(params.get("page")) || 1;
-
     fetchAllUsers(offset, perPage);
     this.setState({ users: this.props.userData, pageCount: totalPage });
   };
@@ -60,7 +55,6 @@ class UserContainer extends Component {
   };
   handlePageClick = async (e) => {
     const selectedPage = e.selected;
-
     const { searchTerm, perPage } = this.state;
     if (searchTerm === "") {
       this.props.fetchAllUsers(selectedPage, perPage);
@@ -69,7 +63,6 @@ class UserContainer extends Component {
       });
     } else {
       this.props.fetchSearchedUser(searchTerm, selectedPage);
-
       this.setState({ offset: selectedPage + 1 }, () => {
         this.searchPage(searchTerm, this.state.offset);
       });
@@ -81,11 +74,16 @@ class UserContainer extends Component {
   deleteUserData = async (id, name) => {
     const { offset, perPage } = this.state;
     if (window.confirm(`Are you sure you want to Delete ${name}?`)) {
-      await deleteUsers(id);
+      this.props.deleteUsers(id);
     } else {
       this.props.history.push("/home");
     }
-    this.props.fetchAllUsers(offset, perPage);
+    if (this.props.userData.length === 1) {
+      this.props.fetchAllUsers(1, perPage);
+      this.setState({ offset: 1 });
+    } else {
+      this.props.fetchAllUsers(offset, perPage);
+    }
   };
   editUserData = async (id) => {
     this.props.history.push(`/updateuser/${id}`);
@@ -212,6 +210,7 @@ class UserContainer extends Component {
               containerClassName={"pagination"}
               subContainerClassName={"pages pagination"}
               activeClassName={"active"}
+              forcePage={this.state.offset - 1}
             />
           </div>
         </Router>
@@ -225,6 +224,7 @@ const mapDispatchToProps = (dispatch) => {
     fetchAllUsers: (page, limit) => dispatch(fetchAllUsers(page, limit)),
     fetchSearchedUser: (searchTerm, offset) =>
       dispatch(fetchSearchedUser(searchTerm, offset)),
+    deleteUsers: (id) => dispatch(deleteUsers(id)),
   };
 };
 export default connect(

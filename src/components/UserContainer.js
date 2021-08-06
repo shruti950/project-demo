@@ -2,9 +2,8 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { deleteUsers, fetchAllUsers, fetchSearchedUser } from "../redux";
 
-import { BrowserRouter as Router, Link, Redirect } from "react-router-dom";
+import { BrowserRouter as Router, Link } from "react-router-dom";
 import ReactPaginate from "react-paginate";
-import axios from "axios";
 class UserContainer extends Component {
   constructor(props) {
     super(props);
@@ -26,7 +25,7 @@ class UserContainer extends Component {
   componentWillMount() {
     this.loadPage();
   }
-  componentDidUpdate(prevProps, prevState, snapShot) {
+  componentDidUpdate(prevProps) {
     if (
       prevProps.userData !== this.props.userData ||
       prevProps.totalPage !== this.props.totalPage
@@ -40,8 +39,7 @@ class UserContainer extends Component {
 
   loadPage = () => {
     const { offset, perPage } = this.state;
-    const { userData, totalPage, fetchAllUsers } = this.props;
-    const params = new URLSearchParams(window.location.search);
+    const { totalPage, fetchAllUsers } = this.props;
     fetchAllUsers(offset, perPage);
     this.setState({ users: this.props.userData, pageCount: totalPage });
   };
@@ -87,7 +85,6 @@ class UserContainer extends Component {
   };
   editUserData = async (id) => {
     this.props.history.push(`/updateuser/${id}`);
-    // this.refreshPage();
   };
   refreshPage = () => {
     window.location.reload();
@@ -95,9 +92,7 @@ class UserContainer extends Component {
 
   filterContent = (users, searchTerm) => {
     if (searchTerm === "") {
-      // this.refreshPage();
       this.loadPage();
-      // this.getData();
     } else {
       const result = users.filter((user) =>
         user.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -174,11 +169,8 @@ class UserContainer extends Component {
                           }}
                         >
                           <button
-                            // onClick={<Redirect to="/updateuser/${user._id}" />}
                             onClick={() => this.editUserData(user._id)}
                             className="btn btn-success btn-sm m-1  "
-                            // component={Link}
-                            // to={`/updateuser/${user._id}`}
                           >
                             UPDATE
                           </button>

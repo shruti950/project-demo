@@ -1,11 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { BrowserRouter as Router, Link, Redirect } from "react-router-dom";
+import { BrowserRouter as Router, Link } from "react-router-dom";
 import { fetchUser, updateUsers } from "../redux";
-// import React from 'react'
-// import { useParams, useHistory, withRouter } from "react-router-dom";
 import HeaderUser from "./HeaderUser";
-
 class UserContainerUpdate extends Component {
   constructor(props) {
     super(props);
@@ -15,78 +12,53 @@ class UserContainerUpdate extends Component {
         age: "",
         email: "",
       },
+      errors: { name: "", age: "", email: "" },
       users: [],
       id: "",
-      p: {},
     };
   }
   onChangeName = (e) => {
+    let errors = this.state.errors;
     const name = e.target.value;
+    errors.name =
+      name.length < 3 ? " Name must be 3 or more  characters long!" : "";
     this.setState((prevState) => ({
       user: { ...prevState.user, name: name },
     }));
   };
   onChangeAge = (e) => {
+    let errors = this.state.errors;
     const age = e.target.value;
+    errors.age = age <= 17 ? "Age is must be 18+ !" : "";
     this.setState((prevState) => ({
       user: { ...prevState.user, age: age },
     }));
   };
   onChangeEmail = (e) => {
+    const validEmailRegex = RegExp(
+      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+    );
+    let errors = this.state.errors;
     const email = e.target.value;
+    errors.email = validEmailRegex.test(email) ? "" : "Email is not valid!";
     this.setState((prevState) => ({
       user: { ...prevState.user, email: email },
     }));
   };
   componentDidMount() {
-    // if (this.props.loadingData === false) {
     const id = this.props.match.params.id;
     this.props.fetchUser(id);
     this.setState({ users: this.props.userData, id: id });
   }
   componentWillReceiveProps(nextProps) {
-    // Any time props.email changes, update state.
     if (nextProps !== this.props) {
       this.setState({
         users: nextProps.userData,
       });
     }
   }
-
-  // }
-  // componentWillMount() {
-  //   if (this.props.loadingData === false) {
-  //   } else {
-  //   }
-  //     "loading data in will",
-  //     this.props.loadingData,
-  //     this.props.loadingData === false
-  //   );
-  //   if (this.props.loadingData === false) {
-  //     const id = this.props.match.params.id;
-  //     // this.setState({ id: id });
-  //     this.props.fetchUser(id);
-  //       "userData in component will mount",
-  //       this.props.match.params.id,
-  //       this.props.userData,
-  //       // this.props.id,
-  //       this.props,
-  //       this.props.fetchUser(id)
-  //     );
-  //       "userData in component will mount id",
-  //       this.props.match.params.id
-  //     );
-  //     this.setState({ users: this.props.userData, id: id });
-  //       "users in component will mount",
-  //       this.state.id,
-  //       this.state.users
-  //     );
-  //     // this.getData();
-  //   }
-  // }
   editUserDetails = async (e) => {
-    // e.preventDefault();
-    const { user, id, users } = this.state;
+    const { user, id, age } = this.state;
     const { updateUsers, userData, history } = this.props;
     if (!user.name || !user.age || !user.email) {
       if (!user.name) {
@@ -97,20 +69,46 @@ class UserContainerUpdate extends Component {
       }
       if (!user.email) {
         user.email = userData[0].email;
+      }
+      var validEmailRegex = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
+
+      if (validEmailRegex.test(user.email) === false || user.age <= 17) {
+        e.preventDefault();
+        if (validEmailRegex.test(user.email) === false) {
+          alert("Email is not valid");
+        }
+        if (user.age <= 17) {
+          alert("Age is must be 18+!");
+        }
+        history.push(`/updateuser/${user._id}`);
+        return;
+      } else {
         await updateUsers(id, user);
         history.push("/home");
         return;
       }
     } else {
-      await updateUsers(id, user);
-      history.push("/home");
-      return;
+      var validEmailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+      if (validEmailRegex.test(user.email) === false || user.age <= 17) {
+        e.preventDefault();
+        if (validEmailRegex.test(user.email) === false) {
+          alert("Email is not valid");
+        }
+        if (user.age <= 17) {
+          alert("Age is must be 18+!");
+        }
+        history.push(`/updateuser/${user._id}`);
+        return;
+      } else {
+        await updateUsers(id, user);
+        history.push("/home");
+        return;
+      }
     }
   };
   render() {
-    let { userData, updateUsers } = this.props;
-    let id = this.props.match.params.id;
-    const { user, users } = this.state;
+    const { users } = this.state;
     return (
       <div className="container ">
         <Router>
@@ -127,9 +125,13 @@ class UserContainerUpdate extends Component {
                         name="name"
                         className="form-control"
                         defaultValue={getuser.name}
-                        // value={user.name}
                         onChange={this.onChangeName}
                       />
+                      {this.state.errors.name.length > 0 && (
+                        <p className=" small font-weight-bold text-danger">
+                          {this.state.errors.name}
+                        </p>
+                      )}
                     </div>
                     <div className="form-group text-left">
                       <label>Age:</label>
@@ -138,9 +140,11 @@ class UserContainerUpdate extends Component {
                         name="age"
                         className="form-control"
                         defaultValue={getuser.age}
-                        // value={user.age}
                         onChange={this.onChangeAge}
                       />
+                      <p className=" small font-weight-bold text-danger">
+                        {this.state.errors.age}
+                      </p>
                     </div>
                     <div className="form-group text-left">
                       <label>Email:</label>
@@ -151,12 +155,17 @@ class UserContainerUpdate extends Component {
                         defaultValue={getuser.email}
                         onChange={this.onChangeEmail}
                       />
+                      {this.state.errors.email.length > 0 && (
+                        <p className=" small font-weight-bold text-danger">
+                          {this.state.errors.email}
+                        </p>
+                      )}
                     </div>
                     <div className="form-group text-left">
                       <Link to={{ pathname: `/home` }}>
                         <button
                           className="btn btn-primary"
-                          onClick={() => this.editUserDetails()}
+                          onClick={(event) => this.editUserDetails(event)}
                           type="submit"
                         >
                           Update

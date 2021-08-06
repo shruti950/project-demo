@@ -65,11 +65,7 @@ export const fetchUsers = () => {
       .get(`${usersUrl}/users`)
       .then((response) => {
         const user = response.data;
-        console.log(
-          "%c 🏥: fetchUsers -> user ",
-          "font-size:16px;background-color:#2dfa82;color:black;",
-          user
-        );
+
         dispatch(fetchUserSuccess(user));
       })
       .catch((error) => {

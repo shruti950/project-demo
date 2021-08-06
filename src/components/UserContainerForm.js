@@ -1,6 +1,6 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { Component } from "react";
 import { connect } from "react-redux";
-import { useHistory, Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { fetchUsers, insertUsers } from "../redux";
 import HeaderUser from "./HeaderUser";
 // import UserContainer from "./UserContainer";
@@ -14,26 +14,34 @@ class UserContainerForm extends Component {
         age: "",
         email: "",
       },
+      errors: { name: "", age: "", email: "" },
       users: [],
     };
   }
-  // changeHandler = (e) => {
-  //   this.setState({ [e.target.name]: e.target.value });
-  // };
   onChangeName = (e) => {
+    let errors = this.state.errors;
     const name = e.target.value;
+    errors.name =
+      name.length < 3 ? " Name must be 3 or more  characters long!" : "";
     this.setState((prevState) => ({
       user: { ...prevState.user, name: name },
     }));
   };
   onChangeAge = (e) => {
+    let errors = this.state.errors;
     const age = e.target.value;
+    errors.age = age <= 17 ? "Age is must be 18+ !" : "";
     this.setState((prevState) => ({
       user: { ...prevState.user, age: age },
     }));
   };
   onChangeEmail = (e) => {
+    const validEmailRegex = RegExp(
+      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+    );
+    let errors = this.state.errors;
     const email = e.target.value;
+    errors.email = validEmailRegex.test(email) ? "" : "Email is not valid!";
     this.setState((prevState) => ({
       user: { ...prevState.user, email: email },
     }));
@@ -46,18 +54,20 @@ class UserContainerForm extends Component {
     this.loadPage();
   }
   loadPage = () => {
-    const { offset, perPage } = this.state;
-    const { userData, totalPage, fetchUsers, fetchAllUsers } = this.props;
+    const { totalPage, fetchUsers } = this.props;
     fetchUsers();
     this.setState({ users: this.props.userData, pageCount: totalPage });
   };
 
   addUser = async (e) => {
-    const { users, user } = this.state;
+    const { user } = this.state;
     const { name, age, email } = this.state.user;
     const { userData, history } = this.props;
     if (!name || !age || !email) {
+      e.preventDefault();
       alert("Please add all the details");
+      history.push("/adduser");
+      return;
     } else {
       this.props.fetchUsers();
       this.setState({ users: userData });
@@ -81,6 +91,19 @@ class UserContainerForm extends Component {
         history.push("/adduser");
         return;
       } else {
+        var validEmailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+        if (validEmailRegex.test(user.email) === false || age <= 17) {
+          e.preventDefault();
+          if (validEmailRegex.test(user.email) === false) {
+            alert("Email is not valid");
+          }
+          if (age <= 17) {
+            alert("Age is must be 18+!");
+          }
+          history.push("/adduser");
+          return;
+        }
         history.push("/home");
         return await this.props.insertUsers(user);
 
@@ -104,17 +127,29 @@ class UserContainerForm extends Component {
               value={name}
               className="form-control"
               onChange={this.onChangeName}
+              required
             />
+            {this.state.errors.name.length > 0 && (
+              <p className=" small font-weight-bold text-danger">
+                {this.state.errors.name}
+              </p>
+            )}
           </div>
           <div className="form-group text-left ">
             <label className="font-weight-bolder">Age:</label>
             <input
-              type="text"
+              type="number"
               name="age"
               value={age}
               className="form-control"
               onChange={this.onChangeAge}
+              required
             />
+            {this.state.errors.age.length > 0 && (
+              <p className=" small font-weight-bold text-danger">
+                {this.state.errors.age}
+              </p>
+            )}
           </div>
           <div className="form-group text-left ">
             <label className="font-weight-bolder">Email:</label>
@@ -124,7 +159,13 @@ class UserContainerForm extends Component {
               value={email}
               className="form-control"
               onChange={this.onChangeEmail}
+              required="required"
             />
+            {this.state.errors.email.length > 0 && (
+              <p className=" small font-weight-bold text-danger">
+                {this.state.errors.email}
+              </p>
+            )}
           </div>
           <div className="form-group text-left">
             <Link to={{ pathname: `/home` }}>
@@ -144,11 +185,6 @@ class UserContainerForm extends Component {
 }
 
 const mapStateToProps = (state) => {
-  console.log(
-    "%c 🐻: mapStateToProps -> state ",
-    "font-size:16px;background-color:#f5b04a;color:black;",
-    state
-  );
   return {
     userData: state.users,
   };
@@ -156,10 +192,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     fetchUsers: () => dispatch(fetchUsers()),
-    // fetchAllUsers: () => dispatch(fetchAllUsers(1, 5)),
     insertUsers: (user) => dispatch(insertUsers(user)),
   };
 };
-export default connect(mapStateToProps, { fetchUsers, insertUsers })(
-  UserContainerForm
-);
+export default connect(mapStateToProps, mapDispatchToProps)(UserContainerForm);
